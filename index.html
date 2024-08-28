@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MotiEditor de Secuencias de Acordes</title>
+    <title>Editor de Secuencias de Acordes</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -14,6 +14,7 @@
         align-items: center;
         height: 100vh;
         flex-direction: column;
+        padding: 10px;
       }
       .container {
         background: white;
@@ -22,19 +23,25 @@
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         width: 100%;
         max-width: 800px;
+        box-sizing: border-box;
       }
       h1 {
         font-size: 24px;
-        color: #051571;
+        color: #333;
+        margin: 0 0 20px;
         text-align: center;
       }
       .controls {
         margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
       .controls input[type="text"] {
         padding: 10px;
         font-size: 16px;
-        width: 200px;
+        width: 100%;
+        max-width: 300px;
         box-sizing: border-box;
         margin: 5px;
       }
@@ -47,9 +54,11 @@
         border-radius: 4px;
         cursor: pointer;
         margin: 5px;
+        max-width: 300px;
+        width: 100%;
       }
       .controls button:hover {
-        background-color: #659cd8;
+        background-color: #0056b3;
       }
       .group {
         margin-bottom: 20px;
@@ -58,20 +67,22 @@
         display: flex;
         align-items: center;
         margin-bottom: 10px;
+        flex-wrap: wrap;
       }
       .group-header input {
         padding: 5px;
         font-size: 16px;
-        width: calc(100% - 110px);
+        width: 100%;
+        max-width: 250px;
         box-sizing: border-box;
         margin-right: 10px;
       }
       .group-header button {
-        background-color: #3551dc;
-        color: white;
+        background-color: #dc3545;
+        margin-top: 10px;
       }
       .group-header button:hover {
-        background-color: #2344c8;
+        background-color: #c82333;
       }
       .chord-list {
         text-align: left;
@@ -82,6 +93,7 @@
         border: 1px solid #ddd;
         border-radius: 4px;
         margin: 0;
+        background: #fff;
       }
       .list-item {
         display: flex;
@@ -89,7 +101,6 @@
         padding: 8px;
         border-bottom: 1px solid #ddd;
         align-items: center;
-        background-color: #fff;
         cursor: move;
         user-select: none; /* Prevent text selection during drag */
       }
@@ -97,27 +108,62 @@
         border-bottom: none;
       }
       .drag-over {
-        background-color: white;
+        background-color: #f1f1f1;
       }
       .delete-btn {
-        background-color: #3551dc;
+        background-color: #dc3545;
+        border: none;
+        padding: 5px 10px;
         color: white;
+        border-radius: 4px;
       }
       .delete-btn:hover {
-        background-color: #659cd8;
-        color: #ddd;
+        background-color: #c82333;
       }
       .export-btn {
-        background-color: #3671cf;
+        background-color: #28a745;
+        border: none;
+        padding: 10px;
+        color: white;
+        border-radius: 4px;
       }
       .export-btn:hover {
-        background-color: #659cd8;
+        background-color: #218838;
+      }
+
+      /* Responsive Design */
+      @media (min-width: 768px) {
+        .controls {
+          flex-direction: row;
+          justify-content: center;
+        }
+        .controls input[type="text"] {
+          width: auto;
+          margin: 5px;
+        }
+        .controls button {
+          width: auto;
+          margin: 5px;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .container {
+          padding: 30px;
+        }
+        h1 {
+          font-size: 30px;
+        }
+        .controls {
+          flex-direction: row;
+          justify-content: space-between;
+        }
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>MotiEditor de Secuencias de Acordes</h1>
+      <h1>Editor de Secuencias de Acordes</h1>
       <div class="controls">
         <input type="text" id="groupNameInput" placeholder="Nombre del Grupo" />
         <input
