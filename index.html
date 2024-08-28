@@ -14,7 +14,6 @@
         align-items: center;
         height: 100vh;
         flex-direction: column;
-        padding: 10px;
       }
       .container {
         background: white;
@@ -28,22 +27,20 @@
       h1 {
         font-size: 24px;
         color: #333;
-        margin: 0 0 20px;
         text-align: center;
+        margin-bottom: 20px;
       }
       .controls {
-        margin-bottom: 20px;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
       }
       .controls input[type="text"] {
         padding: 10px;
         font-size: 16px;
         width: 100%;
-        max-width: 300px;
         box-sizing: border-box;
-        margin: 5px;
       }
       .controls button {
         background-color: #007bff;
@@ -53,9 +50,7 @@
         font-size: 16px;
         border-radius: 4px;
         cursor: pointer;
-        margin: 5px;
-        max-width: 300px;
-        width: 100%;
+        margin: 5px 0;
       }
       .controls button:hover {
         background-color: #0056b3;
@@ -67,22 +62,24 @@
         display: flex;
         align-items: center;
         margin-bottom: 10px;
+        gap: 10px;
         flex-wrap: wrap;
       }
       .group-header input {
         padding: 5px;
         font-size: 16px;
         width: 100%;
-        max-width: 250px;
+        max-width: 300px;
         box-sizing: border-box;
         margin-right: 10px;
       }
       .group-header button {
         background-color: #dc3545;
-        margin-top: 10px;
+        color: aliceblue;
       }
       .group-header button:hover {
         background-color: #c82333;
+        color: aliceblue;
       }
       .chord-list {
         text-align: left;
@@ -93,7 +90,6 @@
         border: 1px solid #ddd;
         border-radius: 4px;
         margin: 0;
-        background: #fff;
       }
       .list-item {
         display: flex;
@@ -101,6 +97,7 @@
         padding: 8px;
         border-bottom: 1px solid #ddd;
         align-items: center;
+        background-color: #fff;
         cursor: move;
         user-select: none; /* Prevent text selection during drag */
       }
@@ -112,51 +109,25 @@
       }
       .delete-btn {
         background-color: #dc3545;
-        border: none;
-        padding: 5px 10px;
-        color: white;
-        border-radius: 4px;
+        color: aliceblue;
       }
       .delete-btn:hover {
         background-color: #c82333;
+        color: aliceblue;
       }
       .export-btn {
         background-color: #28a745;
-        border: none;
-        padding: 10px;
-        color: white;
-        border-radius: 4px;
       }
       .export-btn:hover {
         background-color: #218838;
       }
-
-      /* Responsive Design */
-      @media (min-width: 768px) {
-        .controls {
-          flex-direction: row;
-          justify-content: center;
-        }
-        .controls input[type="text"] {
-          width: auto;
-          margin: 5px;
-        }
+      @media (max-width: 600px) {
+        .controls input[type="text"],
         .controls button {
-          width: auto;
-          margin: 5px;
+          width: 100%;
         }
-      }
-
-      @media (min-width: 1024px) {
-        .container {
-          padding: 30px;
-        }
-        h1 {
-          font-size: 30px;
-        }
-        .controls {
-          flex-direction: row;
-          justify-content: space-between;
+        .group-header input {
+          width: calc(100% - 110px);
         }
       }
     </style>
@@ -165,7 +136,11 @@
     <div class="container">
       <h1>Editor de Secuencias de Acordes</h1>
       <div class="controls">
-        <input type="text" id="groupNameInput" placeholder="Nombre del Grupo" />
+        <input
+          type="text"
+          id="groupNameInput"
+          placeholder="Nombre de la canción"
+        />
         <input
           type="text"
           id="chordInput"
@@ -223,7 +198,7 @@
         const headerDiv = document.createElement("div");
         headerDiv.className = "group-header";
         headerDiv.innerHTML = `
-            <input type="text" value="${group.name}" readonly />
+            <input type="text" value="${group.name}" onblur="updateGroupName(${index}, this.value)" />
             <button onclick="removeGroup(${index})">Eliminar Grupo</button>
         `;
         groupDiv.appendChild(headerDiv);
@@ -238,7 +213,7 @@
           item.dataset.groupIndex = index;
           item.dataset.chordIndex = chordIndex;
           item.innerHTML = `
-                ${chord}
+                <input type="text" value="${chord}" onblur="updateChord(${index}, ${chordIndex}, this.value)" />
                 <button class="delete-btn" onclick="deleteChord(${index}, ${chordIndex})">Eliminar</button>
             `;
           item.addEventListener("dragstart", handleDragStart);
@@ -266,6 +241,24 @@
         if (groups[groupIndex].chords.length === 0) {
           removeGroup(groupIndex);
         } else {
+          localStorage.setItem("groups", JSON.stringify(groups));
+          updateGroupsList();
+        }
+      }
+
+      // Función para actualizar el nombre de un grupo
+      function updateGroupName(index, newName) {
+        if (newName.trim()) {
+          groups[index].name = newName.trim();
+          localStorage.setItem("groups", JSON.stringify(groups));
+          updateGroupsList();
+        }
+      }
+
+      // Función para actualizar un acorde
+      function updateChord(groupIndex, chordIndex, newChord) {
+        if (newChord.trim()) {
+          groups[groupIndex].chords[chordIndex] = newChord.trim();
           localStorage.setItem("groups", JSON.stringify(groups));
           updateGroupsList();
         }
